@@ -1,0 +1,6 @@
+  - [ ] Switch to https://hexdocs.pm/confex/readme.html#content
+  - [ ] Setup oauth
+  - [ ] Rewrite server backend cloudbuild
+  - [ ] Rewrite server backend dockerfile
+  - [ ] Rewrite server backend kubernetes files
+  - [ ] Deploy to GCP

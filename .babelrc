@@ -1,0 +1,15 @@
+{
+  "presets": [
+    ["@babel/preset-env", {"useBuiltIns": "entry", "corejs": 3}],
+    "@babel/preset-react",
+    "@emotion/babel-preset-css-prop",
+    "minify"
+  ],
+  "plugins": [
+    ["module-resolver", {"alias": {
+      "^@internal/(.+)$": "./@internal/\\1",
+      "^@assets/(.+)$": "./assets/\\1",
+    }}],
+    "annotate-console-log",
+  ]
+}
