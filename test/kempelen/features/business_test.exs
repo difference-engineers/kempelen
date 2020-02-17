@@ -3,6 +3,7 @@ defmodule Kempelen.BusinessTest do
 
   describe "business" do
     test "works" do
+      assert Kempelen.Database.Repo.aggregate(Kempelen.Models.Permission, :count, :id) == 0
       {:ok, owner_permission} = %Kempelen.Models.Permission{}
         |> Kempelen.Models.Permission.changeset(%{
             name: "Owner"
