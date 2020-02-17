@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-web
+  namespace: pgadmin4
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      access: external
+  template:
+    metadata:
+      labels:
+        access: external
+    spec:
+      containers:
+        - name: pgadmin4
+          image: crunchydata/crunchy-pgadmin4:centos7-11.4-2.4.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PGADMIN_SETUP_EMAIL
+              value: kurtis.rainbolt-greene@mediaartslab.com
+            - name: PGADMIN_SETUP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: runtime-secrets
+                  key: PGADMIN_SETUP_PASSWORD
+          ports:
+            - containerPort: 5050
+          livenessProbe:
+            httpGet:
+              path: "/"
+              port: 5050
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: "/"
+              port: 5050
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 5

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+terraform show -json | jq '[.values.root_module.child_modules[].resources[] | select(.mode == "managed") | {hostname: .values.name, ip: .values.default_ip_address, cpus: .values.num_cpus, memory: .values.memory, disks: [{label: .values.disk[].label, size: .values.disk[].size}]}]'

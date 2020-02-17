@@ -11,7 +11,7 @@ defmodule KempelenWeb.Router do
     pipe_through :api
 
     forward "/", Absinthe.Plug,
-      schema: Kempelen.Graphql.Schema,
+      schema: KempelenWeb.Graphql.Schema,
       before_send: {__MODULE__, :absinthe_before_send}
   end
 

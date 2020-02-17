@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+terraform fmt
+npx prettier --write ansible/**/*.yml kubernetes/**/*.yml

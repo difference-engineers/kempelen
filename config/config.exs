@@ -22,7 +22,7 @@ config :kempelen, KempelenWeb.Endpoint,
 # Configure background processor oban
 config :kempelen, Oban,
   repo: Kempelen.Database.Repo,
-  prune: {:maxlen, 100_000},
+  prune: {:maxlen, 10_000},
   queues: [default: 10, mailers: 10, events: 50, media: 2, google_places: 1]
 
 # Configures Elixir's Logger

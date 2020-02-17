@@ -1,4 +1,5 @@
-// eslint-disable no-undef import/no-commonjs import/no-nodejs-modules
+/* eslint-disable import/no-commonjs, import/no-nodejs-modules, import/no-commonjs, func-style */
+
 const path = require("path");
 const {HashedModuleIdsPlugin} = require("webpack");
 const {HotModuleReplacementPlugin} = require("webpack");
@@ -16,24 +17,40 @@ const WebpackSubresourceIntegrity = require("webpack-subresource-integrity");
 const DotenvWebpack = require("dotenv-webpack");
 const {config: dotenvConfiguration} = require("dotenv");
 const {compact} = require("@unction/complete");
+const {mergeDeepRight} = require("@unction/complete");
 
 dotenvConfiguration();
 
 const BENCHMARK = process.env.BENCHMARK === "enabled";
 const NODE_ENV = process.env.NODE_ENV || "development";
+const DEVTOOL = NODE_ENV === "production" ? "source-map" : "inline-source-map";
 const PACKAGE_ASSETS = [];
+const SHARED_BUILD_CONFIGURATION = {
+  mode: NODE_ENV,
+  devtool: DEVTOOL,
+  module: {
+    rules: [
+      {
+        test: /index\.js$/u,
+        exclude: /node_modules/u,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+    ],
+  },
+};
 
-module.exports = [
-  {
-    mode: NODE_ENV,
+function clientFor (name, target, configuration = {}) {
+  return mergeDeepRight({
+    ...SHARED_BUILD_CONFIGURATION,
     entry: [
       "@babel/polyfill",
-      "./client/index.js",
+      `./${name}/index.js`,
     ],
-    target: "web",
-    devtool: NODE_ENV === "production" ? "source-map" : "inline-source-map",
+    target,
     output: {
-      path: path.resolve(__dirname, "tmp", "client"),
+      path: path.resolve(__dirname, "tmp", name),
       filename: "[name].[hash].js",
     },
     optimization: {
@@ -112,21 +129,9 @@ module.exports = [
         },
       },
     },
-    module: {
-      rules: [
-        {
-          test: /index\.js$/u,
-          exclude: /node_modules/u,
-          use: {
-            loader: "babel-loader",
-          },
-        },
-      ],
-    },
     devServer: {
-      contentBase: path.join(__dirname, "tmp", "client"),
+      contentBase: path.join(__dirname, "tmp", name),
       compress: true,
-      port: 9000,
       historyApiFallback: true,
       hot: true,
       overlay: true,
@@ -154,7 +159,7 @@ module.exports = [
           minifyCSS: true,
         },
         hash: true,
-        template: "client/index.html",
+        template: path.join(name, "index.html"),
         baseURL: process.env.ORIGIN_LOCATION,
         themeColor: "#4285f4",
         description: "Front page",
@@ -162,11 +167,11 @@ module.exports = [
       new HashedModuleIdsPlugin(),
       new CopyWebpackPlugin([{
         from: path.resolve(__dirname, "assets"),
-        to: path.resolve(__dirname, "tmp", "client"),
+        to: path.resolve(__dirname, "tmp", name),
       }]),
       ...PACKAGE_ASSETS.map(([from, ...to]) => new CopyWebpackPlugin([{
         from,
-        to: path.resolve(__dirname, "tmp", "client", ...to),
+        to: path.resolve(__dirname, "tmp", name, ...to),
       }])),
       new WebpackCommonShake(),
       NODE_ENV === "production" ? new WebpackSubresourceIntegrity({
@@ -188,5 +193,54 @@ module.exports = [
       }),
       BENCHMARK ? new BundleAnalyzerPlugin({analyzerMode: "static", openAnalyzer: false}) : null,
     ]),
-  },
+  })(
+    configuration
+  );
+}
+function serverFor (name, target, configuration = {}) {
+  return mergeDeepRight({
+    ...SHARED_BUILD_CONFIGURATION,
+    entry: [
+      "@babel/polyfill",
+      `./${name}/index.js`,
+    ],
+    target,
+    output: {
+      path: path.resolve(__dirname, "tmp", name),
+    },
+    optimization: {
+      minimize: NODE_ENV === "production",
+    },
+    plugins: compact([
+      NODE_ENV === "production" ? null : new DotenvWebpack(),
+      new EnvironmentPlugin([
+        "NODE_ENV",
+        "BENCHMARK",
+        "COUCHDB_USERNAME",
+        "COUCHDB_PASSWORD",
+        "COUCHDB_URI",
+      ]),
+      NODE_ENV === "production" ? new IgnorePlugin(/^\.\/locale$/u, /moment$/u) : null,
+      NODE_ENV === "production" ? new CleanWebpackPlugin({verbose: true}) : null,
+      new WebpackCommonShake(),
+      BENCHMARK ? new BundleAnalyzerPlugin({analyzerMode: "static", openAnalyzer: false}) : null,
+    ]),
+  })(
+    configuration
+  );
+}
+
+module.exports = [
+  clientFor("browser", "web", {
+    devServer: {
+      port: 9000,
+    },
+  }),
+  clientFor("desktop", "electron-renderer", {
+    devServer: {
+      port: 9001,
+    },
+  }),
+  serverFor("desktop-server", "electron-renderer"),
+  serverFor("browser-server", "node"),
 ];

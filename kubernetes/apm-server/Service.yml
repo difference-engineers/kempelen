@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: apm-server
+spec:
+  type: ClusterIP
+  selector:
+    access: external
+  ports:
+    - name: apm-server-http
+      port: 8200
+      targetPort: 8200

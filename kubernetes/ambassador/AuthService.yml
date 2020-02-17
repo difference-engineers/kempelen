@@ -1,0 +1,12 @@
+---
+apiVersion: getambassador.io/v2
+kind: AuthService
+metadata:
+  name: ambassador-edge-stack-auth
+  namespace: ambassador
+spec:
+  proto: grpc
+  status_on_error:
+    code: 504
+  auth_service: "127.0.0.1:8500"
+  allow_request_body: false # setting this to 'true' allows Plugin and External filters to access the body, but has performance overhead

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-server
+  namespace: apm-server
+data:
+  apm-server.yaml: |-
+    apm-server:
+      host: 0.0.0.0:8200
+    output.file:
+      filename: apm-server
+      number_of_files: 5
+      path: /usr/share/apm-server/data
+      rotate_every_kb: 10000

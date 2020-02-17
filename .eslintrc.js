@@ -30,6 +30,7 @@ module.exports = {
       jsx: true
     }
   },
+  reportUnusedDisableDirectives: true,
   rules: {
     "babel/camelcase": "error",
     "babel/new-cap": "off", // Already handled
@@ -86,7 +87,7 @@ module.exports = {
     "import/no-useless-path-segments": "error",
     "import/no-webpack-loader-syntax": "error",
     "import/order": "error",
-    "import/prefer-default-export": "error",
+    "import/prefer-default-export": "warn",
     "import/unambiguous": "error",
     "jest/consistent-test-it": "error",
     "jest/expect-expect": "error",

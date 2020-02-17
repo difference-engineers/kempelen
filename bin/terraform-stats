@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+def stat(nodes)
+  nodes.reduce([0, 0, 0, 0]) do |(servers, cpus, mem, dsk), node|
+    [servers + 1, cpus + node["cpus"], mem + node["memory"], dsk + node["disks"].map {|disk| disk["size"]}.reduce(:+)]
+  end
+end
+
+require "json"
+
+output = `bin/terraform-nodes`
+
+data = JSON.parse(output)
+
+tree = data.group_by do |datum|
+  datum["hostname"].match(/la-eq-mops-([\w\-]+)-[\w\-]+{1}-\d+/).captures.first
+end
+
+stats = tree.transform_values(&method(:stat)).merge("all" => stat(data))
+
+stats.each do |type, (servers, cpus, mem, dsk)|
+  puts "[#{type}]: #{servers}s (CPU #{cpus}/MEM #{mem}mb/DSK #{dsk}gb)"
+end

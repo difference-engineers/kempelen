@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana-web
+  namespace: kibana
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      access: external
+  template:
+    metadata:
+      labels:
+        access: external
+    spec:
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: kibana-configuration
+          configMap:
+            name: kibana-configuration
+      containers:
+        - name: kibana
+          image: "docker.elastic.co/kibana/kibana:7.5.0"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+          ports:
+            - containerPort: 5601
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 3
+            timeoutSeconds: 5
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  #!/usr/bin/env bash -e
+                  http () {
+                      local path="${1}"
+                      set -- -XGET -s --fail
+
+                      STATUS=$(curl --output /dev/null --write-out "%{http_code}" "http://0.0.0.0:5601${path}")
+                      if [[ "${STATUS}" -eq 200 ]]; then
+                        exit 0
+                      fi
+
+                      echo "Error: Got HTTP code ${STATUS} but expected a 200"
+                      exit 1
+                  }
+
+                  http "/app/kibana"
+          # volumeMounts:
+          # - name: kibana-data
+          #   mountPath: "/var/lib/kibana/files"
+          volumeMounts:
+            - name: kibana-configuration
+              mountPath: /usr/share/kibana/config/kibana.yml
+              subPath: kibana.yml

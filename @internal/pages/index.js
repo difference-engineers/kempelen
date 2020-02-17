@@ -5,6 +5,5 @@ export {default as OurTechnology} from "./OurTechnology";
 export {default as PageNotFound} from "./PageNotFound";
 export {default as PrivacyPolicy} from "./PrivacyPolicy";
 export {default as TermsOfService} from "./TermsOfService";
-export {default as TheCost} from "./TheCost";
 export {default as ThisIsUs} from "./ThisIsUs";
 export {default as SignUp} from "./SignUp";

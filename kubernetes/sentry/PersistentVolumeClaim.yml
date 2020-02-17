@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sentry-data
+  namespace: sentry
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: kubernetes.io/glusterfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: glusterfs-storage
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 5Gi

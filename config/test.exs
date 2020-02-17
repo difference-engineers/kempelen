@@ -3,10 +3,16 @@ use Mix.Config
 # Configure your database
 config :kempelen, Kempelen.Database.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "password",
   database: "kempelen_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Oban configuration
+config :kempelen, Oban,
+  crontab: false,
+  queues: false,
+  prune: :disabled
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.

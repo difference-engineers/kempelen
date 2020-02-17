@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apm-server
+  namespace: apm-server
+spec:
+  replicas: 2
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      access: external
+  template:
+    metadata:
+      labels:
+        access: external
+    spec:
+      containers:
+        - name: apm-server
+          image: "docker.elastic.co/apm/apm-server:7.4.2"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-e"
+          env:
+          ports:
+            - name: http
+              containerPort: 8200
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - name: apm-server-config
+              mountPath: /usr/share/apm-server/apm-server.yml
+              readOnly: true
+              subPath: apm-server.yml
+            - name: data
+              mountPath: /usr/share/apm-server/data
+      volumes:
+        - name: apm-server-config
+          configMap:
+            name: apm-server
+        - name: data
+          hostPath:
+            path: /var/lib/apm-server
+            type: DirectoryOrCreate
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: apm-server
