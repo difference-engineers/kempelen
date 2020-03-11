@@ -5,6 +5,10 @@ defmodule Kempelen.BusinessTest do
     test "works" do
       assert Kempelen.Database.Repo.aggregate(Kempelen.Models.Permission, :count, :id) == 4
 
+      owner_permission = Kempelen.Database.Repo.get_by(Kempelen.Models.Permission, [name: "Owner"])
+
+      assert owner_permission
+
       {:ok, sally} = %Kempelen.Models.Account{}
         |> Kempelen.Models.Account.changeset(%{
             email: "sally@example.game"
