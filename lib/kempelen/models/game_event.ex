@@ -1,10 +1,10 @@
-defmodule Kempelen.Models.GameAct do
+defmodule Kempelen.Models.GameEvent do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "game_acts" do
+  schema "game_events" do
     belongs_to :game_play, Kempelen.Models.GamePlay, primary_key: true
     belongs_to :game_seat, Kempelen.Models.GameSeat, primary_key: true
     belongs_to :game_round, Kempelen.Models.GameRound, primary_key: true

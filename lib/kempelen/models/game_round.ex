@@ -6,7 +6,7 @@ defmodule Kempelen.Models.GameRound do
   @foreign_key_type :binary_id
   schema "game_rounds" do
     belongs_to :game_table, Kempelen.Models.GameTable, primary_key: true
-    has_many :game_acts, Kempelen.Models.GameAct
+    has_many :game_events, Kempelen.Models.GameEvent
 
     timestamps()
   end

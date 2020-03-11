@@ -3,12 +3,7 @@ defmodule Kempelen.BusinessTest do
 
   describe "business" do
     test "works" do
-      assert Kempelen.Database.Repo.aggregate(Kempelen.Models.Permission, :count, :id) == 0
-      {:ok, owner_permission} = %Kempelen.Models.Permission{}
-        |> Kempelen.Models.Permission.changeset(%{
-            name: "Owner"
-          })
-        |> Kempelen.Database.Repo.insert
+      assert Kempelen.Database.Repo.aggregate(Kempelen.Models.Permission, :count, :id) == 4
 
       {:ok, sally} = %Kempelen.Models.Account{}
         |> Kempelen.Models.Account.changeset(%{
@@ -97,16 +92,16 @@ defmodule Kempelen.BusinessTest do
           })
         |> Kempelen.Database.Repo.insert
 
-      {:ok, act_1} = %Kempelen.Models.GameAct{}
-        |> Kempelen.Models.GameAct.changeset(%{
+      {:ok, _} = %Kempelen.Models.GameEvent{}
+        |> Kempelen.Models.GameEvent.changeset(%{
             game_play: place_road,
             game_seat: player_1,
             game_round: round_1
           })
         |> Kempelen.Database.Repo.insert
 
-      {:ok, act_2} = %Kempelen.Models.GameAct{}
-        |> Kempelen.Models.GameAct.changeset(%{
+      {:ok, _} = %Kempelen.Models.GameEvent{}
+        |> Kempelen.Models.GameEvent.changeset(%{
             game_play: place_road,
             game_seat: player_2,
             game_round: round_1

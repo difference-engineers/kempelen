@@ -1,6 +1,13 @@
 defmodule Kempelen.Models.GameTable do
   use Ecto.Schema
   import Ecto.Changeset
+  import Estate, only: [state_machines: 1]
+
+  state_machines([
+    hosting_state: [
+      approve: [configuring: "waiting"]
+    ],
+  ])
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

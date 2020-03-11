@@ -11,7 +11,7 @@ defmodule Kempelen.Models.GameSeat do
     belongs_to :game_table, Kempelen.Models.GameTable, primary_key: true
     belongs_to :account, Kempelen.Models.Account
     belongs_to :game_robot, Kempelen.Models.GameRobot
-    has_many :game_acts, Kempelen.Models.GameAct
+    has_many :game_events, Kempelen.Models.GameEvent
 
     timestamps()
   end
