@@ -50,7 +50,7 @@ defmodule Kempelen.MixProject do
       {:absinthe_phoenix, "~> 1.4"},
       {:absinthe_ecto, "~> 0.1"},
       {:crudry, "~> 2.1"},
-      {:comeonin, "~> 5.1"},
+      {:comeonin, "~> 5.2"},
       {:countries, "~> 1.5"},
       {:envy, "~> 1.1"},
       {:machinery, "~> 1.0"},
