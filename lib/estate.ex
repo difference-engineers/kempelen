@@ -1,10 +1,10 @@
 defmodule Estate do
+  @spec state_machines(%{atom => %{atom => list(tuple)}}) :: [any]
   defmacro state_machines(machines) do
     Enum.flat_map(machines, fn {column_name, events} ->
       Enum.flat_map(events, fn {event_name, transitions} ->
         Enum.map(transitions, fn {from, to} ->
           quote do
-            # IO.inspect("Defining #{__MODULE__}.#{unquote(:"before_#{event_name}")}(record)")
             @desc "Called before #{unquote(event_name)}, with the changeset"
             def unquote(:"before_#{event_name}_from_#{from}")(
                   %Ecto.Changeset{
@@ -14,7 +14,6 @@ defmodule Estate do
               changeset
             end
 
-            # IO.inspect("Defining #{__MODULE__}.#{unquote(:"after_#{event_name}")}(record)")
             @desc "Called after #{unquote(event_name)}, with the changset"
             def unquote(:"after_#{event_name}_from_#{from}")(
                   %Ecto.Changeset{
@@ -25,7 +24,6 @@ defmodule Estate do
               changeset
             end
 
-            # IO.inspect("Defining #{__MODULE__}.#{unquote(:"after_#{event_name}")}(record)")
             @desc "Called after #{unquote(event_name)}!, with the saved record"
             def unquote(:"after_#{event_name}_from_#{from}")({
                   :ok,
@@ -36,7 +34,6 @@ defmodule Estate do
               {:ok, record}
             end
 
-            # IO.inspect("Defining #{__MODULE__}.#{unquote(event_name)}(%{#{unquote(column_name)} => #{unquote(Atom.to_string(from))}} = record)")
             @desc "An action to change the state, if the transition matches, but doesn't save"
             def unquote(event_name)(
                   %{unquote(column_name) => unquote(Atom.to_string(from))} = record
@@ -51,7 +48,6 @@ defmodule Estate do
               |> unquote(:"after_#{event_name}_from_#{from}")()
             end
 
-            # IO.inspect("Defining #{__MODULE__}.#{unquote(event_name)}!(%{:id => id, #{unquote(column_name)} => #{unquote(Atom.to_string(from))}} = record) when not is_nil(id)")
             @desc "An action to change the state, if the transition matches, but does save"
             def unquote(:"#{event_name}!")(
                   %{:id => id, unquote(column_name) => unquote(Atom.to_string(from))} = record

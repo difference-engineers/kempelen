@@ -16,6 +16,7 @@ defmodule KempelenWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+  @spec connect(map, Phoenix.Socket.t(), any) :: {:ok, Phoenix.Socket.t()}
   def connect(params, socket, _connect_info) do
     {
       :ok,
