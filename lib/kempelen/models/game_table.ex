@@ -3,11 +3,11 @@ defmodule Kempelen.Models.GameTable do
   import Ecto.Changeset
   import Estate, only: [state_machines: 1]
 
-  state_machines([
+  state_machines(
     hosting_state: [
       approve: [configuring: "waiting"]
-    ],
-  ])
+    ]
+  )
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -27,8 +27,8 @@ defmodule Kempelen.Models.GameTable do
     |> cast(attributes, [:name])
     |> validate_required([:name])
     |> assoc_constraint(:game)
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
     |> put_assoc(:game, attributes.game)
   end
 end

@@ -20,7 +20,7 @@ defmodule Kempelen.Models.Organization do
     record
     |> cast(attributes, [:name])
     |> validate_required([:name])
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
   end
 end

@@ -19,15 +19,15 @@ defmodule Kempelen.Models.GameSeat do
   @doc false
   def changeset(record, attributes) do
     record
-      |> cast(attributes, [:name, :host])
-      |> validate_required([:name, :host])
-      |> assoc_constraint(:game_table)
-      |> assoc_constraint(:account)
-      |> assoc_constraint(:game_robot)
-      |> Kempelen.Slugs.Name.maybe_generate_slug
-      |> Kempelen.Slugs.Name.unique_constraint
-      |> put_assoc(:game_robot, attributes[:game_robot])
-      |> put_assoc(:account, attributes[:account])
-      |> put_assoc(:game_table, attributes.game_table)
+    |> cast(attributes, [:name, :host])
+    |> validate_required([:name, :host])
+    |> assoc_constraint(:game_table)
+    |> assoc_constraint(:account)
+    |> assoc_constraint(:game_robot)
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
+    |> put_assoc(:game_robot, attributes[:game_robot])
+    |> put_assoc(:account, attributes[:account])
+    |> put_assoc(:game_table, attributes.game_table)
   end
 end

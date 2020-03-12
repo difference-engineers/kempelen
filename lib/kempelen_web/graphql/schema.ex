@@ -2,6 +2,7 @@ defmodule KempelenWeb.Graphql.Schema do
   use Absinthe.Schema
 
   import_types(Absinthe.Type.Custom)
+
   import_types(KempelenWeb.Graphql.Types.{
     Account,
     GameEvent,
@@ -18,6 +19,7 @@ defmodule KempelenWeb.Graphql.Schema do
     Organization,
     Session
   })
+
   import_types(KempelenWeb.Graphql.Queries.{
     Account,
     GameEvent,
@@ -32,6 +34,7 @@ defmodule KempelenWeb.Graphql.Schema do
     Organization,
     Session
   })
+
   import_types(KempelenWeb.Graphql.Mutations.{
     Account,
     GameEvent,
@@ -46,6 +49,7 @@ defmodule KempelenWeb.Graphql.Schema do
     Organization,
     Session
   })
+
   import_types(KempelenWeb.Graphql.Subscriptions.{
     Account,
     GameEvent,
@@ -78,7 +82,6 @@ defmodule KempelenWeb.Graphql.Schema do
     import_fields(:permission_queries)
     import_fields(:organization_queries)
     import_fields(:session_queries)
-
   end
 
   mutation do

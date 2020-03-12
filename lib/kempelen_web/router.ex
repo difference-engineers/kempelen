@@ -15,8 +15,12 @@ defmodule KempelenWeb.Router do
       before_send: {__MODULE__, :absinthe_before_send}
   end
 
-  def absinthe_before_send(%Plug.Conn{method: "POST"} = connection, %Absinthe.Blueprint{} = blueprint) do
-    Enum.reduce(blueprint.execution.context[:cookies] || [], connection, fn ([key, value], accumulation) ->
+  def absinthe_before_send(
+        %Plug.Conn{method: "POST"} = connection,
+        %Absinthe.Blueprint{} = blueprint
+      ) do
+    Enum.reduce(blueprint.execution.context[:cookies] || [], connection, fn [key, value],
+                                                                            accumulation ->
       if value do
         Plug.Conn.put_session(accumulation, key, value)
       else

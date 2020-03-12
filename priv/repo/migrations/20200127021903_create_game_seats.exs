@@ -7,7 +7,10 @@ defmodule Kempelen.Repo.Migrations.CreateGameSeats do
       add :name, :text, null: false
       add :slug, :citext, null: false
       add :host, :boolean, null: false, default: false
-      add :game_table_id, references(:game_tables, on_delete: :nothing, type: :binary_id), null: false
+
+      add :game_table_id, references(:game_tables, on_delete: :nothing, type: :binary_id),
+        null: false
+
       add :account_id, references(:accounts, on_delete: :nothing, type: :binary_id)
       add :game_robot_id, references(:game_robots, on_delete: :nothing, type: :binary_id)
 

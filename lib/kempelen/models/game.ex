@@ -16,13 +16,13 @@ defmodule Kempelen.Models.Game do
   end
 
   @doc false
-def changeset(record, attributes) do
+  def changeset(record, attributes) do
     record
     |> cast(attributes, [:name])
     |> validate_required([:name])
     |> assoc_constraint(:organization)
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
     |> put_assoc(:organization, attributes.organization)
   end
 end

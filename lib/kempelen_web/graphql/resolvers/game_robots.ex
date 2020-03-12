@@ -1,35 +1,41 @@
 defmodule KempelenWeb.Graphql.Resolvers.GameRobots do
+  @spec list(any, any, any) :: {:ok, [%Kempelen.Models.GameRobot{}]} | {:error, any}
   def list(_parent, _arguments, _resolution) do
     {:ok, Kempelen.Database.Repo.all(Kempelen.Models.GameRobot)}
   end
 
-  def fetch(_parent, %{id: id}, _resolution) when not is_nil(id) do
+  @spec find(any, %{input: %{id: bitstring}}, any) ::
+          {:ok, %Kempelen.Models.GameRobot{}} | {:error, any}
+  def find(_parent, %{input: %{id: id}}, _resolution) when not is_nil(id) and is_bitstring(id) do
     {:ok, Kempelen.Database.Repo.get(Kempelen.Models.GameRobot, id)}
   end
 
-  def create(_parent, arguments, _resolution) do
-    default_attributes = %{}
-    attributes = Map.merge(default_attributes, arguments)
-
+  @spec create(any, %{input: map}, any) :: {:ok, %Kempelen.Models.GameRobot{}} | {:error, any}
+  def create(_parent, %{input: input}, _resolution) do
     %Kempelen.Models.GameRobot{}
-      |> Kempelen.Models.GameRobot.changeset(attributes)
-      |> case do
-        %Ecto.Changeset{valid?: true} = changeset -> Kempelen.Database.Repo.insert(changeset)
-        %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-      end
+    |> Kempelen.Models.GameRobot.changeset(input)
+    |> case do
+      %Ecto.Changeset{valid?: true} = changeset -> Kempelen.Database.Repo.insert(changeset)
+      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+    end
   end
 
-  def update(_parent, %{id: id} = arguments, _resolution) when not is_nil(id) do
-    Kempelen.Database.Repo.get(Kempelen.Models.GameRobot, id)
-      |> Kempelen.Models.GameRobot.changeset(arguments)
-      |> case do
-        %Ecto.Changeset{valid?: true} = changeset -> Kempelen.Database.Repo.insert(changeset)
-        %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
-      end
+  @spec update(any, %{input: %{:id => bitstring, optional(atom) => any}}, any) ::
+          {:ok, %Kempelen.Models.GameRobot{}} | {:error, any}
+  def update(_parent, %{input: %{id: id} = input}, _resolution) when is_bitstring(id) do
+    Kempelen.Database.Repo.get!(Kempelen.Models.GameRobot, id)
+    |> Kempelen.Models.GameRobot.changeset(input)
+    |> case do
+      %Ecto.Changeset{valid?: true} = changeset -> Kempelen.Database.Repo.insert(changeset)
+      %Ecto.Changeset{valid?: false} = changeset -> {:error, changeset}
+    end
   end
 
-  def destroy(_parent, %{id: id}, _resolution) when not is_nil(id) do
+  @spec destroy(any, %{input: %{id: bitstring}}, any) ::
+          {:ok, %Kempelen.Models.GameRobot{}} | {:error, any}
+  def destroy(_parent, %{input: %{id: id}}, _resolution)
+      when not is_nil(id) and is_bitstring(id) do
     Kempelen.Database.Repo.get(Kempelen.Models.GameRobot, id)
-      |> Kempelen.Database.Repo.delete
+    |> Kempelen.Database.Repo.delete()
   end
 end

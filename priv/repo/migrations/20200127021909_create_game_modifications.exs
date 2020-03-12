@@ -11,6 +11,7 @@ defmodule Kempelen.Repo.Migrations.CreateGameModifications do
 
       timestamps()
     end
+
     create unique_index(:game_modifications, [:game_id, :slug])
     create index(:game_modifications, [:slug])
   end

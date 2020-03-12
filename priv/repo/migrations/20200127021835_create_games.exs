@@ -6,7 +6,9 @@ defmodule Kempelen.Repo.Migrations.CreateGames do
       add :id, :binary_id, primary_key: true
       add :name, :text, null: false
       add :slug, :citext, null: false
-      add :organization_id, references(:organizations, on_delete: :nothing, type: :binary_id), null: false
+
+      add :organization_id, references(:organizations, on_delete: :nothing, type: :binary_id),
+        null: false
 
       timestamps()
     end

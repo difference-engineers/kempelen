@@ -19,8 +19,8 @@ defmodule Kempelen.Models.GameRobot do
     record
     |> cast(attributes, [:name])
     |> validate_required([:name])
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
     |> put_assoc(:game, attributes.game)
   end
 end

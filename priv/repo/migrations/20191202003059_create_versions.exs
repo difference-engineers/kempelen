@@ -7,7 +7,10 @@ defmodule Repo.Migrations.AddVersions do
       add :item_type, :text, null: false
       add :item_id, :uuid
       add :item_changes, :map, null: false
-      add :originator_id, references(:accounts, on_delete: :nothing, type: :binary_id), null: false
+
+      add :originator_id, references(:accounts, on_delete: :nothing, type: :binary_id),
+        null: false
+
       add :origin, :text
       add :meta, :map
       add :inserted_at, :utc_datetime, null: false

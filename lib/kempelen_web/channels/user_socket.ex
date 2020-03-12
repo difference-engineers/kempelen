@@ -19,9 +19,11 @@ defmodule KempelenWeb.UserSocket do
   def connect(params, socket, _connect_info) do
     {
       :ok,
-      Absinthe.Phoenix.Socket.put_options(socket, context: %{
-        current_account: account_from_session(params)
-      })
+      Absinthe.Phoenix.Socket.put_options(socket,
+        context: %{
+          current_account: account_from_session(params)
+        }
+      )
     }
   end
 

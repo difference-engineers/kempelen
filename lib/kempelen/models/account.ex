@@ -3,7 +3,7 @@ defmodule Kempelen.Models.Account do
   import Estate, only: [state_machines: 1]
   import Ecto.Changeset
 
-  state_machines([
+  state_machines(
     onboarding_state: [
       complete: [converted: "completed"]
     ],
@@ -11,7 +11,7 @@ defmodule Kempelen.Models.Account do
       grant_administrator_powers: [user: "administrator"],
       revoke_administrator_powers: [administrator: "user"]
     ]
-  ])
+  )
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -39,23 +39,28 @@ defmodule Kempelen.Models.Account do
   @doc false
   def changeset(record, attributes) do
     record
-      |> change()
-      |> set_password_hash_if_changing_password(attributes)
-      |> replace_email_with_unconfirmed_email(attributes)
-      |> cast(attributes, [:email, :username, :name, :password_hash, :unconfirmed_email])
-      |> validate_required([:email])
-      |> unique_constraint(:email)
-      |> unique_constraint(:username)
+    |> change()
+    |> set_password_hash_if_changing_password(attributes)
+    |> replace_email_with_unconfirmed_email(attributes)
+    |> cast(attributes, [:email, :username, :name, :password_hash, :unconfirmed_email])
+    |> validate_required([:email])
+    |> unique_constraint(:email)
+    |> unique_constraint(:username)
   end
 
   defp set_password_hash_if_changing_password(%Ecto.Changeset{} = changeset, %{password: password}) do
     changeset |> Ecto.Changeset.change(Argon2.add_hash(password))
   end
+
   defp set_password_hash_if_changing_password(%Ecto.Changeset{} = changeset, _), do: changeset
 
   # If have email, given email, and not the same then remove given email and update unconfirmed
   # If have email, given email, and the same then remove given email and return changeset
-  defp replace_email_with_unconfirmed_email(%Ecto.Changeset{changes: %Kempelen.Models.Account{email: recorded_email}} = changeset, %{email: unconfirmed_email} = attributes) when is_bitstring(recorded_email) and is_bitstring(unconfirmed_email) do
+  defp replace_email_with_unconfirmed_email(
+         %Ecto.Changeset{changes: %Kempelen.Models.Account{email: recorded_email}} = changeset,
+         %{email: unconfirmed_email} = attributes
+       )
+       when is_bitstring(recorded_email) and is_bitstring(unconfirmed_email) do
     Map.delete(attributes, :email)
 
     if unconfirmed_email != recorded_email do
@@ -64,12 +69,18 @@ defmodule Kempelen.Models.Account do
       changeset
     end
   end
+
   # If have no email, and given email, remove given email and update confirmed
-  defp replace_email_with_unconfirmed_email(%Ecto.Changeset{data: %Kempelen.Models.Account{email: nil}} = changeset, %{email: unconfirmed_email} = attributes) when is_bitstring(unconfirmed_email) do
+  defp replace_email_with_unconfirmed_email(
+         %Ecto.Changeset{data: %Kempelen.Models.Account{email: nil}} = changeset,
+         %{email: unconfirmed_email} = attributes
+       )
+       when is_bitstring(unconfirmed_email) do
     Map.delete(attributes, :email)
 
     changeset |> Ecto.Changeset.change(%{unconfirmed_email: unconfirmed_email})
   end
+
   # If maybe have email and given no email then return changeset
   defp replace_email_with_unconfirmed_email(%Ecto.Changeset{} = changeset, _), do: changeset
 end

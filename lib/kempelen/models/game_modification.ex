@@ -19,8 +19,8 @@ defmodule Kempelen.Models.GameModification do
     |> cast(attributes, [:name, :change])
     |> validate_required([:name, :change])
     |> assoc_constraint(:game)
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
     |> put_assoc(:game, attributes.game)
   end
 end

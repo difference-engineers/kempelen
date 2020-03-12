@@ -6,9 +6,10 @@ defmodule Kempelen.Plugs.GraphqlSessionContext do
   def call(%Plug.Conn{method: "POST"} = connection, _) do
     session_id = Plug.Conn.get_session(connection, :session_id)
 
-    account = if session_id do
-      Kempelen.Database.Repo.get(Kempelen.Models.Account, session_id)
-    end
+    account =
+      if session_id do
+        Kempelen.Database.Repo.get(Kempelen.Models.Account, session_id)
+      end
 
     Absinthe.Plug.put_options(
       connection,

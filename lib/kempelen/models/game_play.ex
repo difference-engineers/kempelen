@@ -18,8 +18,8 @@ defmodule Kempelen.Models.GamePlay do
     |> cast(attributes, [:name])
     |> validate_required([:name])
     |> assoc_constraint(:game)
-    |> Kempelen.Slugs.Name.maybe_generate_slug
-    |> Kempelen.Slugs.Name.unique_constraint
+    |> Kempelen.Slugs.Name.maybe_generate_slug()
+    |> Kempelen.Slugs.Name.unique_constraint()
     |> put_assoc(:game, attributes.game)
   end
 end
