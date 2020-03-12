@@ -13,8 +13,6 @@ defmodule KempelenWeb.Graphql.Schema do
     GameSeat,
     GameTable,
     Game,
-    OrganizationPermission,
-    OrganizationMembership,
     Permission,
     Organization,
     Session
