@@ -1,39 +1,35 @@
 defmodule Kempelen.BusinessTest do
   use Kempelen.DataCase, async: true
 
-  def create_owner_account() do
-    %Kempelen.Models.Account{}
-    |> Kempelen.Models.Account.changeset(%{
-      email: "sally@example.game"
-    })
-    |> Kempelen.Database.Repo.insert()
-  end
-
   describe "business" do
-    test "works" do
-      assert Kempelen.Database.Repo.aggregate(Kempelen.Models.Permission, :count, :id) == 4
+    def create_owner_account() do
+      {:ok, account} = %Kempelen.Models.Account{}
+      |> Kempelen.Models.Account.changeset(%{
+        email: "sally@example.game"
+      })
+      |> Kempelen.Database.Repo.insert()
+      account
+    end
+
+    def found_organization() do
+      owner = create_owner_account()
 
       owner_permission = Kempelen.Database.Repo.get_by(Kempelen.Models.Permission, name: "Owner")
 
       assert owner_permission
 
-      {:ok, sally} = create_owner_account()
-
-      {:ok, hasbro} =
-        %Kempelen.Models.Organization{}
-        |> Kempelen.Models.Organization.changeset(%{
-          name: "Hasbro"
-        })
-        |> Kempelen.Database.Repo.insert()
-
+      {:ok, organization} = %Kempelen.Models.Organization{}
+          |> Kempelen.Models.Organization.changeset(%{
+            name: "Hasbro"
+          })
+          |> Kempelen.Database.Repo.insert()
       {:ok, organization_membership} =
         %Kempelen.Models.OrganizationMembership{}
         |> Kempelen.Models.OrganizationMembership.changeset(%{
-          account: sally,
-          organization: hasbro
+          account: owner,
+          organization: organization
         })
         |> Kempelen.Database.Repo.insert()
-
       {:ok, _} =
         %Kempelen.Models.OrganizationPermission{}
         |> Kempelen.Models.OrganizationPermission.changeset(%{
@@ -41,25 +37,67 @@ defmodule Kempelen.BusinessTest do
           permission: owner_permission
         })
         |> Kempelen.Database.Repo.insert()
-
       assert Enum.member?(
-               hasbro |> Kempelen.Database.Repo.preload(:accounts) |> Map.fetch!(:accounts),
-               sally
-             )
+          organization
+            |> Kempelen.Database.Repo.preload(:accounts)
+            |> Map.fetch!(:accounts),
+          owner
+        )
+      organization
+    end
 
-      {:ok, setters_of_catan} =
+    def make_game_for(organization) do
+      {:ok, game} =
         %Kempelen.Models.Game{}
         |> Kempelen.Models.Game.changeset(%{
           name: "Settlers of Catan",
-          organization: hasbro
+          organization: organization
+        })
+        |> Kempelen.Database.Repo.insert()
+      game
+    end
+
+    def start_a_game(game, hoster) do
+      {:ok, game_table} =
+        %Kempelen.Models.GameTable{}
+        |> Kempelen.Models.GameTable.changeset(%{
+          name: "Anyone can join!",
+          game: game
         })
         |> Kempelen.Database.Repo.insert()
 
+      {:ok, game_seat} =
+        %Kempelen.Models.GameSeat{}
+        |> Kempelen.Models.GameSeat.changeset(%{
+          name: "Kurtis",
+          game_table: game_table,
+          account: hoster,
+          host: true
+        })
+        |> Kempelen.Database.Repo.insert()
+
+      [game_seat, game_table]
+    end
+
+    def join_a_table(game_table, account) do
+      {:ok, game_seat} =
+        %Kempelen.Models.GameSeat{}
+        |> Kempelen.Models.GameSeat.changeset(%{
+          name: "Dufus",
+          game_table: game_table,
+          game_robot: account
+        })
+        |> Kempelen.Database.Repo.insert()
+      game_seat
+    end
+    test "works" do
+      hasbro = found_organization()
+      game = make_game_for(hasbro)
       {:ok, place_road} =
         %Kempelen.Models.GamePlay{}
         |> Kempelen.Models.GamePlay.changeset(%{
           name: "Place Road",
-          game: setters_of_catan
+          game: game
         })
         |> Kempelen.Database.Repo.insert()
 
@@ -67,7 +105,7 @@ defmodule Kempelen.BusinessTest do
         %Kempelen.Models.GameRobot{}
         |> Kempelen.Models.GameRobot.changeset(%{
           name: "Beginner",
-          game: setters_of_catan
+          game: game
         })
         |> Kempelen.Database.Repo.insert()
 
@@ -78,42 +116,17 @@ defmodule Kempelen.BusinessTest do
         })
         |> Kempelen.Database.Repo.insert()
 
-      make_a_table()
-      # Starting a game
-      {:ok, table_1} =
-        %Kempelen.Models.GameTable{}
-        |> Kempelen.Models.GameTable.changeset(%{
-          name: "FFA",
-          game: setters_of_catan
-        })
-        |> Kempelen.Database.Repo.insert()
+      [seat_1, game_table] = start_a_game(game, kurtis)
 
-      {:ok, player_1} =
-        %Kempelen.Models.GameSeat{}
-        |> Kempelen.Models.GameSeat.changeset(%{
-          name: "Kurtis",
-          game_table: table_1,
-          account: kurtis,
-          host: true
-        })
-        |> Kempelen.Database.Repo.insert()
-
-      {:ok, player_2} =
-        %Kempelen.Models.GameSeat{}
-        |> Kempelen.Models.GameSeat.changeset(%{
-          name: "Dufus",
-          game_table: table_1,
-          game_robot: beginner_robot
-        })
-        |> Kempelen.Database.Repo.insert()
+      seat_2 = join_a_table(game_table, beginner_robot)
 
       # Game start
-      start_the_game()
+      # start_the_game()
 
       {:ok, round_1} =
         %Kempelen.Models.GameRound{}
         |> Kempelen.Models.GameRound.changeset(%{
-          game_table: table_1
+          game_table: game_table
         })
         |> Kempelen.Database.Repo.insert()
 
@@ -121,7 +134,7 @@ defmodule Kempelen.BusinessTest do
         %Kempelen.Models.GameEvent{}
         |> Kempelen.Models.GameEvent.changeset(%{
           game_play: place_road,
-          game_seat: player_1,
+          game_seat: seat_1,
           game_round: round_1
         })
         |> Kempelen.Database.Repo.insert()
@@ -130,7 +143,7 @@ defmodule Kempelen.BusinessTest do
         %Kempelen.Models.GameEvent{}
         |> Kempelen.Models.GameEvent.changeset(%{
           game_play: place_road,
-          game_seat: player_2,
+          game_seat: seat_2,
           game_round: round_1
         })
         |> Kempelen.Database.Repo.insert()
