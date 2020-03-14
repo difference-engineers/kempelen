@@ -5,7 +5,7 @@ import {HelmetProvider} from "react-helmet-async";
 import {Provider as ReduxProvider} from "react-redux";
 
 import {Application} from "@internal/elements";
-import store from "@internal/store";
+import store from "@internal/client-store";
 
 store.dispatch.database.initialize()
   .then(
