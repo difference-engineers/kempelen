@@ -13,7 +13,7 @@ import {SignUp} from "@internal/pages";
 import {PageNotFound} from "@internal/pages";
 
 export default function Application () {
-  if (window.ENV.DESTKOP) {
+  if (process.env.DESTKOP) {
     return <ErrorBoundry>
       <Switch>
         <Route exact path="/" component={LandingPage} />
