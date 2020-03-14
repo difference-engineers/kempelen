@@ -57,8 +57,9 @@ defmodule Kempelen.MixProject do
       {:oban, "~> 1.0"},
       {:flippant, "~> 1.0"},
       {:google_maps, "~> 0.11"},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.7", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false}
     ]
   end
 
