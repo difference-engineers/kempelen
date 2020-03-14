@@ -1,4 +1,4 @@
-import {join} from "path";
+import {join} from "path"; // eslint-disable-line import/no-nodejs-modules
 import React from "react";
 import requireEnvironmentVariables from "require-environment-variables";
 import {Provider as ReduxProvider} from "react-redux";
@@ -8,31 +8,32 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import compression from "compression";
+import {parse} from "mustache";
+import {render} from "mustache";
 import helmet from "helmet";
-
-
 import logger from "./logger";
+import store from "@internal/server-store";
 import {Application} from "@internal/elements";
 
 requireEnvironmentVariables([
   "PORT",
   "NODE_ENV",
   "WWW_ORIGIN",
-  "SUPPORT_EMAIL",
 ]);
-const rootDirectory = join(__dirname, process.env.NODE_ENV === "production" ? "../" : "../tmp");
+const rootDirectory = join(__dirname, process.env.NODE_ENV === "production" ? ".." : join("..", "tmp"));
+const template = parse(join(rootDirectory, "index.html"));
 const application = express();
 
 application.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 application.use(compression());
 application.use(cors());
 application.use(helmet());
-application.use("/assets", express.static(join(rootDirectory, "client"), {fallthrough: false}));
+application.use("/assets", express.static(join(rootDirectory, "browser", "assets"), {fallthrough: false}));
 application.get("*", (request, response) => {
   const helmetContext = {};
   const routerContext = {};
   const content = renderToString(
-    <ReduxProvider store={{}}>
+    <ReduxProvider store={store}>
       <StaticRouter location={request.url} context={routerContext}>
         <Application />
       </StaticRouter>
@@ -43,7 +44,14 @@ application.get("*", (request, response) => {
     return 400;
   }
 
-  return response.send(content);
+  return response.send(render(template, {
+    content,
+    googleTagManagerId: "",
+    supportEmail: "",
+    metadata: {
+      title: "Kemeplen",
+    },
+  }));
 });
 
 application.listen(

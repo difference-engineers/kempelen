@@ -159,7 +159,7 @@ function clientFor (name, target, configuration = {}) {
           minifyCSS: true,
         },
         hash: true,
-        template: path.join(name, "index.html"),
+        template: path.join(name, "..", "templates", "index.html"),
         baseURL: process.env.ORIGIN_LOCATION,
         themeColor: "#4285f4",
         description: "Front page",
@@ -167,7 +167,7 @@ function clientFor (name, target, configuration = {}) {
       new HashedModuleIdsPlugin(),
       new CopyWebpackPlugin([{
         from: path.resolve(__dirname, "assets"),
-        to: path.resolve(__dirname, "tmp", name),
+        to: path.resolve(__dirname, "tmp", name, "assets"),
       }]),
       ...PACKAGE_ASSETS.map(([from, ...to]) => new CopyWebpackPlugin([{
         from,
@@ -231,16 +231,16 @@ function serverFor (name, target, configuration = {}) {
 }
 
 module.exports = [
-  clientFor("browser", "web", {
-    devServer: {
-      port: 9000,
-    },
-  }),
-  clientFor("desktop", "electron-renderer", {
-    devServer: {
-      port: 9001,
-    },
-  }),
-  serverFor("desktop-server", "electron-renderer"),
+  // clientFor("browser", "web", {
+  //   devServer: {
+  //     port: 9000,
+  //   },
+  // }),
+  // clientFor("desktop", "electron-renderer", {
+  //   devServer: {
+  //     port: 9001,
+  //   },
+  // }),
   serverFor("browser-server", "node"),
+  // serverFor("desktop-server", "electron-renderer"),
 ];
