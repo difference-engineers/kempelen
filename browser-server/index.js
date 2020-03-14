@@ -1,4 +1,5 @@
-import {join} from "path"; // eslint-disable-line import/no-nodejs-modules
+import path from "path"; // eslint-disable-line import/no-nodejs-modules
+import {readFileSync} from "fs"; // eslint-disable-line import/no-nodejs-modules
 import React from "react";
 import requireEnvironmentVariables from "require-environment-variables";
 import {Provider as ReduxProvider} from "react-redux";
@@ -20,15 +21,14 @@ requireEnvironmentVariables([
   "NODE_ENV",
   "WWW_ORIGIN",
 ]);
-const rootDirectory = join(__dirname, process.env.NODE_ENV === "production" ? ".." : join("..", "tmp"));
-const template = parse(join(rootDirectory, "index.html"));
+const template = parse(readFileSync(path.join(__dirname, "index.html")));
 const application = express();
 
 application.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 application.use(compression());
 application.use(cors());
 application.use(helmet());
-application.use("/assets", express.static(join(rootDirectory, "browser", "assets"), {fallthrough: false}));
+application.use("/assets", express.static(path.join(__dirname, "assets"), {fallthrough: false}));
 application.get("*", (request, response) => {
   const helmetContext = {};
   const routerContext = {};

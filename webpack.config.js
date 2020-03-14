@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs, import/no-nodejs-modules, import/no-commonjs, func-style */
+/* eslint-disable import/no-commonjs, import/no-nodejs-modules, func-style */
 
 const path = require("path");
 const {HashedModuleIdsPlugin} = require("webpack");
@@ -160,9 +160,6 @@ function clientFor (name, target, configuration = {}) {
         },
         hash: true,
         template: path.join(name, "..", "templates", "index.html"),
-        baseURL: process.env.ORIGIN_LOCATION,
-        themeColor: "#4285f4",
-        description: "Front page",
       }),
       new HashedModuleIdsPlugin(),
       new CopyWebpackPlugin([{
@@ -205,6 +202,10 @@ function serverFor (name, target, configuration = {}) {
       `./${name}/index.js`,
     ],
     target,
+    node: {
+      __dirname: false,
+      __filename: false,
+    },
     output: {
       path: path.resolve(__dirname, "tmp", name),
     },
@@ -231,11 +232,11 @@ function serverFor (name, target, configuration = {}) {
 }
 
 module.exports = [
-  // clientFor("browser", "web", {
-  //   devServer: {
-  //     port: 9000,
-  //   },
-  // }),
+  clientFor("browser-client", "web", {
+    devServer: {
+      port: 9000,
+    },
+  }),
   // clientFor("desktop", "electron-renderer", {
   //   devServer: {
   //     port: 9001,
