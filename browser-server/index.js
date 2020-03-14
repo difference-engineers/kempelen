@@ -13,7 +13,7 @@ import {parse} from "mustache";
 import {render} from "mustache";
 import helmet from "helmet";
 import logger from "./logger";
-import store from "@internal/server-store";
+import store from "./store";
 import {Application} from "@internal/elements";
 
 requireEnvironmentVariables([

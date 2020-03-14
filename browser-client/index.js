@@ -4,8 +4,8 @@ import {BrowserRouter} from "react-router-dom";
 import {HelmetProvider} from "react-helmet-async";
 import {Provider as ReduxProvider} from "react-redux";
 
+import store from "./store";
 import {Application} from "@internal/elements";
-import store from "@internal/client-store";
 
 store.dispatch.database.initialize()
   .then(

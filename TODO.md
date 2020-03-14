@@ -1,4 +1,7 @@
   - [ ] Switch to https://hexdocs.pm/confex/readme.html#content
+  - [x] Figure out how we're going to deliver the first html payload
+  - [ ] Iterate over every asset in the manifest and create a route for it
+  - [ ] Benchmark mode doesnt work for building?
   - [ ] Setup oauth
   - [ ] Rewrite server backend cloudbuild
   - [ ] Rewrite server backend dockerfile
