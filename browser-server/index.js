@@ -21,14 +21,17 @@ requireEnvironmentVariables([
   "NODE_ENV",
   "WWW_ORIGIN",
 ]);
-const template = parse(readFileSync(path.join(__dirname, "index.html")));
+
+const template = readFileSync(path.join(__dirname, "assets", "index.html"), "utf8");
 const application = express();
+
+parse(template);
 
 application.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 application.use(compression());
 application.use(cors());
 application.use(helmet());
-application.use("/assets", express.static(path.join(__dirname, "assets"), {fallthrough: false}));
+application.use("/assets", express.static(path.join(__dirname, "assets"), {fallthrough: false, index: false}));
 application.get("*", (request, response) => {
   const helmetContext = {};
   const routerContext = {};
