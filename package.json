@@ -15,7 +15,6 @@
   "homepage": "https://github.com/Kempelen/mvp#readme",
   "repository": "github:Kempelen/mvp",
   "bugs": "https://github.com/Kempelen/mvp/issues",
-  "browserslist": "> 0.25%, not dead",
   "engines": {
     "node": "13.1.0",
     "npm": "6.12.1"
