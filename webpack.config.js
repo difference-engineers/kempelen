@@ -45,7 +45,6 @@ function clientFor (name, target, configuration = {}) {
   return mergeDeepRight({
     ...SHARED_BUILD_CONFIGURATION,
     entry: [
-      "@babel/polyfill",
       `./${name}/index.js`,
     ],
     target,
@@ -198,7 +197,6 @@ function serverFor (name, target, configuration = {}) {
   return mergeDeepRight({
     ...SHARED_BUILD_CONFIGURATION,
     entry: [
-      "@babel/polyfill",
       `./${name}/index.js`,
     ],
     target,
