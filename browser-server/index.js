@@ -31,6 +31,7 @@ application.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev
 application.use(compression());
 application.use(cors());
 application.use(helmet());
+
 application.use("/assets", express.static(path.join(__dirname, "assets"), {fallthrough: false, index: false}));
 application.get("*", (request, response) => {
   const helmetContext = {};

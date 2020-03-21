@@ -1,4 +1,4 @@
-postgres 11.2
+postgres 12.2
 redis 5.0.3
 nodejs 13.10.1
 elixir 1.10.1

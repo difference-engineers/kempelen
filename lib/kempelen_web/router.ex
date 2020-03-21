@@ -2,6 +2,7 @@ defmodule KempelenWeb.Router do
   use KempelenWeb, :router
 
   pipeline :api do
+    plug CORSPlug, origin: "http://localhost:9000"
     plug :accepts, ["json"]
     plug :fetch_session
     plug Kempelen.Plugs.GraphqlSessionContext

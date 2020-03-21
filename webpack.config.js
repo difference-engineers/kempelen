@@ -38,6 +38,11 @@ const SHARED_BUILD_CONFIGURATION = {
           loader: "babel-loader",
         },
       },
+      {
+        test: /\.gql$/u,
+        exclude: /node_modules/u,
+        loader: "graphql-tag/loader",
+      },
     ],
   },
 };
@@ -74,9 +79,8 @@ function clientFor (name, target, configuration = {}) {
     ],
     target,
     output: {
-      // publicPath: '//cdn.example.com'
-      publicPath: "/assets/",
-      path: path.resolve(__dirname, "tmp", name.split("-")[0], "assets"),
+      publicPath: PRODUCTION ? "/assets/" : "/",
+      path: path.resolve(__dirname, "tmp", name.split("-")[0], PRODUCTION ? "assets" : ""),
       filename: "[name].[hash].js",
       chunkFilename: "[id].[chunkhash].js",
     },

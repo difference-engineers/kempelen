@@ -1,4 +1,7 @@
 import React from "react";
+import {graphql} from "@apollo/react-hoc";
+import {useQuery} from "@apollo/react-hooks";
+import query from "./index.gql";
 
 import {Page} from "@internal/elements";
 import {Link} from "@internal/elements";
@@ -13,7 +16,10 @@ const layoutStyle = {
   gridGap: "5px",
 };
 
-export default function LandingPage () {
+export default graphql(query)(function LandingPage () {
+  const {loading, error, data} = useQuery(query);
+  console.log({loading, error, data});
+
   return <Page layoutStyle={layoutStyle} subtitle="Welcome!">
     <section css={{gridArea: "showcase"}}>
       showcase
@@ -45,4 +51,4 @@ export default function LandingPage () {
       feed
     </section>
   </Page>;
-}
+});

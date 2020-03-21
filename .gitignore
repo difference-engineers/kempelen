@@ -13,7 +13,7 @@
 /node_modules/
 /coverage/
 /.nyc_output/
-/docker-compose/*/data/
+/services/*/data/
 
 # Ignore uploaded files in development
 /storage/*
@@ -23,8 +23,8 @@
 /.env
 
 # Ignore master key for decrypting credentials and more.
-/kubernetes/runtime-secrets.yaml
-/kubernetes/test/
+# /kubernetes/runtime-secrets.yaml
+# /kubernetes/test/
 
 # The directory Mix will write compiled artifacts to.
 /_build/

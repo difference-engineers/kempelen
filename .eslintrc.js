@@ -10,7 +10,8 @@ module.exports = {
     "promise",
     "react-hooks",
     "react",
-    "unicorn"
+    "unicorn",
+    "graphql"
   ],
   env: {
     es6: true,
