@@ -1,54 +1,55 @@
 import React from "react";
 import {graphql} from "@apollo/react-hoc";
 import {useQuery} from "@apollo/react-hooks";
+import {Helmet} from "react-helmet-async";
 import query from "./index.gql";
 
 import {Page} from "@internal/elements";
 import {Link} from "@internal/elements";
 
 const layoutStyle = {
-  gridTemplateAreas: `
-    "showcase showcase showcase"
-    "brand brand authentication"
-    "review review review"
-    "feed feed feed"
-  `,
-  gridGap: "5px",
+  "display": "grid",
+  "grid-template-rows": "1fr 1fr",
 };
 
 export default graphql(query)(function LandingPage () {
   const {loading, error, data} = useQuery(query);
-  console.log({loading, error, data});
 
-  return <Page layoutStyle={layoutStyle} subtitle="Welcome!">
-    <section css={{gridArea: "showcase"}}>
+  return <Page layoutStyle={layoutStyle}>
+    <Helmet>
+      <title>Kempelen</title>
+      <meta name="description" content="A place to play popular board games!" />
+    </Helmet>
+    <section id="forOrganizations">
+      a image
+      <header css={{}}>
+        <h1>Kempelen For Business</h1>
+      </header>
+      introduction
+      callToAction
+    </section>
+    <section id="forPlayers">
+      b image
+      <header css={{}}>
+        <h1>Kempelen For Players</h1>
+      </header>
+      introduction
+      callToAction
+    </section>
+    <section id="remaining">
+      <section css={{}}>
       showcase
-    </section>
-
-    <header css={{gridArea: "brand"}}>
-      <h1>Kempelen</h1>
-    </header>
-
-    <section css={{gridArea: "authentication"}}>
-      <section>
-        <Link kind="primary" href="/sign-up">
-          Join us
-        </Link>
       </section>
 
-      <section>
-        <Link kind="secondary" href="/sign-in">
-          Login
-        </Link>
-      </section>
-    </section>
+      <section css={{}} />
 
-    <section css={{gridArea: "review"}}>
+      <section css={{}}>
       review
-    </section>
+      </section>
 
-    <section css={{gridArea: "feed"}}>
+      <section css={{}}>
       feed
+      </section>
     </section>
   </Page>;
 });

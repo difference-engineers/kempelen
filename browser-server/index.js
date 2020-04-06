@@ -1,7 +1,6 @@
 import path from "path"; // eslint-disable-line import/no-nodejs-modules
 import {readFileSync} from "fs"; // eslint-disable-line import/no-nodejs-modules
 import React from "react";
-import requireEnvironmentVariables from "require-environment-variables";
 import {Provider as ReduxProvider} from "react-redux";
 import {StaticRouter} from "react-router";
 import {renderToString} from "react-dom/server"; // eslint-disable-line import/no-internal-modules
@@ -15,12 +14,6 @@ import helmet from "helmet";
 import logger from "./logger";
 import store from "./store";
 import {Application} from "@internal/elements";
-
-requireEnvironmentVariables([
-  "PORT",
-  "NODE_ENV",
-  "WWW_ORIGIN",
-]);
 
 const template = readFileSync(path.join(__dirname, "assets", "index.html"), "utf8");
 const application = express();
